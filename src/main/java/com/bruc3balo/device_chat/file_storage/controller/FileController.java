@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +24,8 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping(value = "upload", consumes =MediaType.ALL_VALUE)
+    public ResponseEntity<?> uploadFile(@RequestBody byte[] file) {
         try {
             Sha1 sha1 = fileService.storeFile(file);
             return ResponseEntity.ok().body(sha1);

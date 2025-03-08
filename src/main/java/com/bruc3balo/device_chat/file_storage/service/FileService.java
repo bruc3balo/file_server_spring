@@ -9,5 +9,7 @@ import java.security.NoSuchAlgorithmException;
 public interface FileService {
     Sha1 storeFile(MultipartFile file) throws IOException, NoSuchAlgorithmException;
 
+    Sha1 storeFile(byte[] blob) throws IOException, NoSuchAlgorithmException;
+
     byte[] retrieveAndDeleteFile(Sha1 sha1) throws IOException;
 }

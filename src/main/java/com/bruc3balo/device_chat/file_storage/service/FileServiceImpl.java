@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,12 +28,18 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Sha1 storeFile(MultipartFile file) throws IOException, NoSuchAlgorithmException {
-        String hash = Hashing.computeSha1Hash(file.getBytes());
+        return storeFile(file.getBytes());
+    }
+
+    @Override
+    public Sha1 storeFile(byte[] blob) throws IOException, NoSuchAlgorithmException {
+        String hash = Hashing.computeSha1Hash(blob);
         Sha1 sha1 = new Sha1(hash);
-        log.info("Storing file " + file.getOriginalFilename() + " with hash " + hash);
+        log.info("Storing file with hash " + hash);
         Path path = dumpPath.resolve(sha1.getHashSubFolder()).resolve(sha1.hash());
         Files.createDirectories(path.getParent());
-        Files.copy(file.getInputStream(), path, StandardCopyOption.COPY_ATTRIBUTES);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(blob);
+        Files.copy(byteArrayInputStream, path, StandardCopyOption.REPLACE_EXISTING);
         log.info("Stored file to "+path.toAbsolutePath());
         return sha1;
     }
