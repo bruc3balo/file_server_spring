@@ -1,0 +1,18 @@
+services:
+  device-chat-api:
+    image: device-chat-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: device-chat-api
+    ports:
+      - "6834:6834"
+    environment:
+      - root_storage=/device-chat_files
+    volumes:
+      - device-chat-volume:/device-chat_files
+    restart: always
+
+volumes:
+  device-chat-volume:
+    driver: local
